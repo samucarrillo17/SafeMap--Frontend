@@ -39,6 +39,7 @@ export type ReviewInput = {
   professor: string;
   rating: number;
   reason: string;
+  
 };
 
 type CalificacionialogProps = {
@@ -46,6 +47,7 @@ type CalificacionialogProps = {
   onOpenChange: (open: boolean) => void;
   params: string;
   nombre: string;
+  onSuccess: () => void | Promise<void>;
 };
 
 export function CalificacionDialog({
@@ -53,6 +55,7 @@ export function CalificacionDialog({
   onOpenChange,
   params,
   nombre,
+  onSuccess,
 }: CalificacionialogProps) {
   const router = useRouter();
   const form = useForm<CalificacionFormValues, any, CalificacionOutput>({
@@ -85,6 +88,7 @@ export function CalificacionDialog({
       reset();
       onOpenChange(false);
       router.refresh();
+      await onSuccess(); 
     } catch (error) {
       console.error("Error al crear la calificación:", error);
       toast.error("Error al crear la calificación");

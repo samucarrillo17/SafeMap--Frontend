@@ -268,6 +268,7 @@ export default function Page() {
               onOpenChange={setOpenDialogCalificacion}
               params={selectedBarrio.id}
               nombre={selectedBarrio.nombre}
+              onSuccess={getBarrios}
             />
           </aside>
         )}
