@@ -38,7 +38,7 @@ export function StarRating({
             className={cn(
               "transition-colors",
               filled
-                ? "fill-primary text-primary"
+                ? "fill-negro-primario text-negro-primario"
                 : "fill-transparent text-muted-foreground/40",
             )}
           />
@@ -55,15 +55,13 @@ export function StarRating({
             className="rounded-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
             onMouseEnter={() => setHover(star)}
             onMouseLeave={() => setHover(null)}
-            onFocus={() => setHover(star)}
-            onBlur={() => setHover(null)}
             onClick={() => onChange?.(star)}
           >
             {Icon}
           </button>
         );
       })}
-      <StarRating value={3} onChange={(v) => alert(v)} />
+      
     </div>
   );
 }

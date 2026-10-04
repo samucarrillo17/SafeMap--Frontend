@@ -5,15 +5,14 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 
-
-export async function loginAction(email: string, password: string) {
+export async function loginAction(correo: string, contrasena: string) {
   try {
     const { data } = await axios.post(`${process.env.API_URL}/auth/login`, {
-      email,
-      password,
+      correo,
+      contrasena,
     });
 
-    if (data.token && data.role) {
+    if (data.token ) {
       const cookieStore = await cookies();
       cookieStore.set("token", data.token, {
         httpOnly: true,
@@ -21,12 +20,12 @@ export async function loginAction(email: string, password: string) {
         sameSite: "lax",
         path: "/",
       });
-      cookieStore.set("role", data.role, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      });
+      // cookieStore.set("role", data.role, {
+      //   httpOnly: true,
+      //   secure: process.env.NODE_ENV === "production",
+      //   sameSite: "lax",
+      //   path: "/",
+      // });
     }
 
     return { success: true, data };
@@ -43,14 +42,14 @@ export async function loginAction(email: string, password: string) {
 
 export async function registerAction(dataRegister: RegisterInput) {
   try {
-    const { confirmPassword, ...registerDto } = dataRegister;
+    const { confirmarContrasena, ...registerDto } = dataRegister;
 
     const { data } = await axios.post(
       `${process.env.API_URL}/auth/register`,
       registerDto,
     );
 
-    const token = data.access_token || data.token;
+    const token = data.token;
 
     if (!token) {
       return { success: false, error: "No se recibió un token de registro" };

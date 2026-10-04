@@ -6,9 +6,9 @@ import "leaflet/dist/leaflet.css";
 import { Barrios, EstadoSemaforo } from "@/app/interfaces/Barrios.interface";
 
 const levelColors: Record<EstadoSemaforo, { stroke: string; fill: string }> = {
-  verde: { stroke: "#2f9e6d", fill: "#b9efd5" },
-  amarillo: { stroke: "#d59028", fill: "#ffe1a8" },
-  rojo: { stroke: "#d45b60", fill: "#f8b8b9" },
+  verde: { stroke: "#2f9e6d", fill: "#91fdc9" },
+  amarillo: { stroke: "#d59028", fill: "#f4c56d" },
+  rojo: { stroke: "#d45b60", fill: "#f98889" },
   sin_calificar: { stroke: "#8a8a8a", fill: "#e0e0e0" },
 };
 
@@ -28,6 +28,18 @@ const neighborhoodCoordinates: Record<string, [number, number][]> = {
   ],
 };
 
+function getLayerStyle(item: Barrios, isSelected: boolean): L.PathOptions {
+  const key = (item.estado_semaforo as EstadoSemaforo) || "sin_calificar";
+  const colors = levelColors[key] || levelColors.sin_calificar;
+
+  return {
+    color: colors.stroke,
+    fillColor: colors.fill,
+    fillOpacity: isSelected ? 0.85 : 0.85,
+    weight: isSelected ? 3 : 1,
+  };
+}
+
 export function LeafletMap({
   neighborhoods,
   selectedId,
@@ -43,8 +55,9 @@ export function LeafletMap({
   const layersRef = useRef<Record<string, L.Path>>({});
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
+  const selectedIdRef = useRef(selectedId);
+  selectedIdRef.current = selectedId;
 
-  // Efecto 1: crea el mapa UNA sola vez y redibuja capas cuando cambia la lista de barrios
   useEffect(() => {
     let cancelled = false;
 
@@ -52,7 +65,7 @@ export function LeafletMap({
       if (cancelled || !mapRef.current) return;
 
       if (!leafletMap.current) {
-        // Límites geográficos alrededor de Barranquilla (suroeste, noreste)
+      
         const barranquillaBounds = L.latLngBounds(
           L.latLng(10.9, -74.95), // esquina suroeste
           L.latLng(11.1, -74.7), // esquina noreste
@@ -61,9 +74,9 @@ export function LeafletMap({
         leafletMap.current = L.map(mapRef.current, {
           zoomControl: true,
           attributionControl: true,
-          minZoom: 12, // no se puede alejar más de este nivel
-          maxBounds: barranquillaBounds, // no se puede panear fuera de este recuadro
-          maxBoundsViscosity: 1.0, // 1.0 = límite "duro", no deja arrastrar nada afuera
+          minZoom: 12, 
+          maxBounds: barranquillaBounds, 
+          maxBoundsViscosity: 1.0, 
         }).setView([10.997, -74.8], 13);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -74,7 +87,7 @@ export function LeafletMap({
 
       const map = leafletMap.current;
 
-      // Limpiar capas previas antes de redibujar (sin destruir el mapa)
+     
       Object.values(layersRef.current).forEach((layer) =>
         map.removeLayer(layer),
       );
@@ -83,10 +96,9 @@ export function LeafletMap({
       const featuresGroup = L.featureGroup();
 
       neighborhoods.forEach((item) => {
-        const semaforoKey =
-          (item.estado_semaforo as EstadoSemaforo) || "sin_calificar";
-        const colors = levelColors[semaforoKey] || levelColors.sin_calificar;
         const slug = item.nombre.toLowerCase().replace(/\s+/g, "-");
+        const isSelected = item.id === selectedIdRef.current;
+        const style = getLayerStyle(item, isSelected);
 
         let layer: L.Path;
         const hasValidGeoJSON =
@@ -95,31 +107,19 @@ export function LeafletMap({
 
         if (hasValidGeoJSON) {
           layer = L.geoJSON(item.geometria as any, {
-            style: {
-              color: colors.stroke,
-              fillColor: colors.fill,
-              fillOpacity: 0.72,
-              weight: 1.5,
-            },
+            style,
           }) as unknown as L.Path;
         } else {
           const coords =
             neighborhoodCoordinates[slug] ||
             neighborhoodCoordinates["alto-prado"];
-          layer = L.polygon(coords, {
-            color: colors.stroke,
-            fillColor: colors.fill,
-            fillOpacity: 0.72,
-            weight: 1.5,
-          });
+          layer = L.polygon(coords, style);
         }
 
-        layer.bindTooltip(item.nombre, {
-          permanent: true,
-          direction: "center",
-        });
+        layer.bindTooltip(item.nombre, { sticky: true });
         layer.on("click", () => onSelectRef.current(item.id));
         layer.addTo(map);
+        if (isSelected) layer.bringToFront();
         featuresGroup.addLayer(layer);
         layersRef.current[item.id] = layer;
       });
@@ -134,16 +134,23 @@ export function LeafletMap({
     return () => {
       cancelled = true;
     };
-  }, [neighborhoods]); // ← ya NO depende de selectedId ni onSelect
+  }, [neighborhoods]);
 
-  // Efecto 2: solo actualiza el grosor del borde del barrio seleccionado
+  
   useEffect(() => {
     Object.entries(layersRef.current).forEach(([id, layer]) => {
-      layer.setStyle({ weight: id === selectedId ? 3 : 1.5 });
-    });
-  }, [selectedId]);
+      const item = neighborhoods.find((n) => n.id === id);
+      if (!item) return;
 
-  // El mapa solo se destruye cuando el componente se desmonta de verdad
+      const isSelected = id === selectedId;
+      layer.setStyle(getLayerStyle(item, isSelected));
+
+     
+      if (isSelected) layer.bringToFront();
+    });
+  }, [selectedId, neighborhoods]);
+
+  
   useEffect(() => {
     return () => {
       leafletMap.current?.remove();

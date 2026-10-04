@@ -1,7 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GraduationCap, Mail, Lock, User, IdCard } from "lucide-react";
+import {
+  GraduationCap,
+  Mail,
+  Lock,
+  User,
+  IdCard,
+  ShieldCheck,
+} from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +28,7 @@ import {
 } from "@/components/ui/field";
 import { useForm } from "react-hook-form";
 
-import { loginAction, registerAction } from "@/server/auth/action";
+import { registerAction } from "@/server/auth/action";
 import toast from "react-hot-toast";
 import { RegisterInput, registerSchema } from "@/app/schemas/auth-schema";
 
@@ -62,19 +69,24 @@ export function RegisterForm() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <GraduationCap className="size-6" />
+          <div className="p-2.5 bg-negro-primario text-white rounded-xl shadow-sm">
+            <ShieldCheck size={22} strokeWidth={2.5} />
           </div>
-          <span className="text-lg font-semibold tracking-tight">
-            Aula Libre
-          </span>
+          <div className="leading-tight">
+            <strong className="block text-base font-bold text-negro-primario">
+              Barranquilla
+            </strong>
+            <span className="text-sm text-piel font-medium">en confianza</span>
+          </div>
         </div>
 
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl">Registrarse</CardTitle>
+        <Card className="text-negro-primario">
+          <CardHeader className="text-center gap-3">
+            <CardTitle className="text-2xl font-semibold">
+              Crea una cuenta
+            </CardTitle>
             <CardDescription>
-              Crea una cuenta para acceder a las reseñas
+              Tu opinión ayuda a que Barranquilla se mueva mejor.
             </CardDescription>
           </CardHeader>
 
@@ -89,7 +101,7 @@ export function RegisterForm() {
                       id="name"
                       type="text"
                       placeholder="ej: Juan"
-                      className="pl-9"
+                      className="pl-9 py-5"
                       {...register("nombre")}
                     />
                   </div>
@@ -108,7 +120,7 @@ export function RegisterForm() {
                       id="email"
                       type="email"
                       placeholder="nombre@universidad.edu"
-                      className="pl-9"
+                      className="pl-9 py-5"
                       {...register("correo")}
                     />
                   </div>
@@ -126,7 +138,7 @@ export function RegisterForm() {
                       id="password"
                       type="password"
                       placeholder="••••••••"
-                      className="pl-9"
+                      className="pl-9 py-5"
                       {...register("contrasena")}
                     />
                   </div>
@@ -137,7 +149,7 @@ export function RegisterForm() {
                     </FieldDescription>
                   ) : (
                     <FieldDescription>
-                      Usa al menos 8 caracteres.
+                      Usa al menos 6 caracteres.
                     </FieldDescription>
                   )}
                 </Field>
@@ -152,7 +164,7 @@ export function RegisterForm() {
                       id="confirmPassword"
                       type="password"
                       placeholder="••••••••"
-                      className="pl-9"
+                      className="pl-9 py-5"
                       {...register("confirmarContrasena")}
                     />
                   </div>
@@ -162,8 +174,11 @@ export function RegisterForm() {
                     </FieldDescription>
                   )}
                 </Field>
-                <Button type="submit" className="w-full cursor-pointer">
-                  Registrarse
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer bg-negro-primario py-5"
+                >
+                  Crear mi cuenta
                 </Button>
               </FieldGroup>
             </form>
@@ -173,15 +188,12 @@ export function RegisterForm() {
             <p className="text-center text-sm text-muted-foreground">
               ¿Ya tienes cuenta?{" "}
               <Link
-                href="/login"
-                className="font-medium text-primary underline-offset-4 hover:underline"
+                href="/iniciar-sesion"
+                className="font-medium text-piel underline-offset-4 hover:underline"
               >
                 Inicia sesión
               </Link>
-              {/* ¿Ya tienes cuenta?{" "}
-                  <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
-                    Inicia sesión
-                  </Link> */}
+  
             </p>
           </CardFooter>
         </Card>

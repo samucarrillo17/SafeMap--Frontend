@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { GraduationCap, Mail, Lock } from "lucide-react";
+import { GraduationCap, Mail, Lock, ShieldCheck } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,13 +24,10 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import { LoginInput, loginSchema } from "@/app/schemas/auth-schema";
-import { getPostLoginRedirect } from "@/lib/helper";
 import { loginAction } from "@/server/auth/action";
-
 
 export function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -54,11 +51,7 @@ export function LoginForm() {
         });
         return;
       }
-
-      const from = searchParams.get("from");
-      const target = getPostLoginRedirect(result.data.role, from);
-
-      router.push(target);
+      
       router.refresh();
     } catch (error) {
       return error;
@@ -69,19 +62,24 @@ export function LoginForm() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <GraduationCap className="size-6" />
+          <div className="p-2.5 bg-negro-primario text-white rounded-xl shadow-sm">
+            <ShieldCheck size={22} strokeWidth={2.5} />
           </div>
-          <span className="text-lg font-semibold tracking-tight">
-            Aula Libre
-          </span>
+          <div className="leading-tight">
+            <strong className="block text-base font-bold text-negro-primario">
+              Barranquilla
+            </strong>
+            <span className="text-sm text-piel font-medium">en confianza</span>
+          </div>
         </div>
 
         <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl">Iniciar sesión</CardTitle>
-            <CardDescription>
-              Ingresa tus datos para acceder a las reseñas
+          <CardHeader className="text-center gap-3">
+            <CardTitle className="text-2xl font-semibold text-negro-primario">
+              Iniciar sesión
+            </CardTitle>
+            <CardDescription className="text-gris-secundario">
+              Ingresa para explorar barrios y compartir tu experiencia.
             </CardDescription>
           </CardHeader>
 
@@ -89,14 +87,16 @@ export function LoginForm() {
             <form id="auth-form" onSubmit={handleSubmit(onSubmitLogin)}>
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="email">Correo</FieldLabel>
+                  <FieldLabel htmlFor="email" className="text-negro-primario">
+                    Correo
+                  </FieldLabel>
                   <div className="relative">
                     <Mail className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="email"
                       type="email"
                       placeholder="nombre@universidad.edu"
-                      className="pl-9"
+                      className="pl-9 py-5"
                       {...register("correo")}
                     />
                   </div>
@@ -107,29 +107,33 @@ export function LoginForm() {
                   )}
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="password">Contraseña</FieldLabel>
+                  <FieldLabel
+                    htmlFor="password"
+                    className="text-negro-primario"
+                  >
+                    Contraseña
+                  </FieldLabel>
                   <div className="relative">
                     <Lock className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="password"
                       type="password"
                       placeholder="••••••••"
-                      className="pl-9"
+                      className="pl-9 py-5"
                       {...register("contrasena")}
                     />
                   </div>
 
-                  {errors.contrasena ? (
+                  {errors.contrasena && (
                     <FieldDescription className="text-destructive">
                       {errors.contrasena.message}
                     </FieldDescription>
-                  ) : (
-                    <FieldDescription>
-                      Usa al menos 8 caracteres.
-                    </FieldDescription>
-                  )}
+                  ) }
                 </Field>
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full bg-negro-primario py-5 cursor-pointer hover:bg-negro-primario/90"
+                >
                   Iniciar sesión
                 </Button>
               </FieldGroup>
@@ -140,12 +144,11 @@ export function LoginForm() {
             <p className="text-center text-sm text-muted-foreground">
               ¿No tienes cuenta?{" "}
               <Link
-                href="/register"
-                className="font-medium text-primary underline-offset-4 hover:underline"
+                href="/registrate"
+                className="font-medium text-piel underline-offset-4 hover:underline"
               >
                 Regístrate
               </Link>
-              
             </p>
           </CardFooter>
         </Card>
