@@ -28,7 +28,7 @@ export default function Page() {
   const [barrios, setBarrios] = useState<Barrios[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [openDialogCalificacion, setOpenDialogCalificacion] = useState(false);
-  
+
   const router = useRouter();
 
   useEffect(() => {
@@ -77,17 +77,7 @@ export default function Page() {
       {/* Topbar */}
       <header className="flex items-center justify-between py-4 border-b border-slate-200 mb-8">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-gris-secundario text-white rounded-xl shadow-sm">
-            <ShieldCheck size={22} strokeWidth={2.5} />
-          </div>
-          <div className="leading-tight">
-            <strong className="block text-base font-bold text-slate-900">
-              Barranquilla
-            </strong>
-            <span className="text-xs text-gris-secundario font-medium">
-              en confianza
-            </span>
-          </div>
+          <img src="/safemap-logo.png" alt="" width="150" />
         </div>
         <button
           className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"

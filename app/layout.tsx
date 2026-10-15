@@ -10,7 +10,14 @@ const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 export const metadata: Metadata = {
   title: "Barranquilla en confianza | Mapa comunitario",
   description:
-    "Consulta y comparte la percepción de seguridad de los barrios de Barranquilla.",
+    "Consulta y comparte la percepción de seguridad de los barrios de Barranquilla",
+  openGraph: {
+    title: "SafeMap - Mapa comunitario",
+    description:
+      "La opinión de los ciudadanos sobre cada barrio de Barranquilla, en un mapa. Muévete y elige dónde vivir con confianza",
+    siteName: "SafeMap",
+    images: ["/og-image.png"],
+  },
 };
 
 export const viewport: Viewport = {

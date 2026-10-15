@@ -63,6 +63,26 @@ body {
   color: var(--ink);
 }
 
+.leaflet-tooltip.barrio-label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #45496a;
+  font-size: 11px;
+  font-weight: 700;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff;  /* contorno blanco para que se lea sobre cualquier color */
+  pointer-events: none;                      /* no estorba los clics sobre el barrio */
+}
+
+/* quita la flechita del tooltip */
+.leaflet-tooltip.barrio-label::before {
+  display: none;
+}
+
+.ocultar-labels .leaflet-tooltip.barrio-label {
+  display: none;
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);

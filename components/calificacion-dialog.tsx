@@ -81,6 +81,7 @@ export function CalificacionDialog({
 
       if (!result.success) {
         toast.error(result.error);
+        reset()
         return;
       }
 

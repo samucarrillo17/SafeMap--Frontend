@@ -74,9 +74,10 @@ export function LeafletMap({
         leafletMap.current = L.map(mapRef.current, {
           zoomControl: true,
           attributionControl: true,
-          minZoom: 12, 
-          maxBounds: barranquillaBounds, 
-          maxBoundsViscosity: 1.0, 
+          minZoom: 12,
+          maxBounds: barranquillaBounds,
+          maxBoundsViscosity: 1.0,
+          scrollWheelZoom: false,
         }).setView([10.997, -74.8], 13);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -92,6 +93,13 @@ export function LeafletMap({
         map.removeLayer(layer),
       );
       layersRef.current = {};
+
+      const toggleLabels = () => {
+        const container = map.getContainer();
+        container.classList.toggle("ocultar-labels", map.getZoom() < 14);
+      };
+      map.on("zoomend", toggleLabels);
+      toggleLabels();
 
       const featuresGroup = L.featureGroup();
 
@@ -116,7 +124,11 @@ export function LeafletMap({
           layer = L.polygon(coords, style);
         }
 
-        layer.bindTooltip(item.nombre, { sticky: true });
+        layer.bindTooltip(item.nombre, {
+          permanent: true, 
+          direction: "center", 
+          className: "barrio-label",
+        });
         layer.on("click", () => onSelectRef.current(item.id));
         layer.addTo(map);
         if (isSelected) layer.bringToFront();

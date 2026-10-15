@@ -51,7 +51,7 @@ export function LoginForm() {
         });
         return;
       }
-      
+
       router.refresh();
     } catch (error) {
       return error;
@@ -62,15 +62,7 @@ export function LoginForm() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
-          <div className="p-2.5 bg-negro-primario text-white rounded-xl shadow-sm">
-            <ShieldCheck size={22} strokeWidth={2.5} />
-          </div>
-          <div className="leading-tight">
-            <strong className="block text-base font-bold text-negro-primario">
-              Barranquilla
-            </strong>
-            <span className="text-sm text-piel font-medium">en confianza</span>
-          </div>
+          <img src="/safemap-logo.png" alt="" width="300" />
         </div>
 
         <Card>
@@ -128,7 +120,7 @@ export function LoginForm() {
                     <FieldDescription className="text-destructive">
                       {errors.contrasena.message}
                     </FieldDescription>
-                  ) }
+                  )}
                 </Field>
                 <Button
                   type="submit"
